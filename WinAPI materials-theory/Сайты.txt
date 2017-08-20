@@ -1,0 +1,3 @@
+http://dims.karelia.ru/win32/ - ресурсы
+http://www.frolov-lib.ru/books/bsp/v22/ch2_1.html - тулбар
+https://www.codeproject.com/Articles/1042516/Custom-Controls-in-Win-API-Scrolling - скролы
