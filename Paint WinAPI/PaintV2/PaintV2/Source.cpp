@@ -1,9 +1,9 @@
+#include "resource.h"
 #include <Windows.h>
+#include <zmouse.h>
 #include <tchar.h>
 #include <CommCtrl.h>
-#include "resource.h"
 #include <vector>
-#include <zmouse.h>
 
 #pragma comment(lib, "comctl32.lib")
 
@@ -150,8 +150,8 @@ void ZoomCoordinateTransformation(int* xMousePosition, int* yMousePosition, int 
 //			   it returns 1, otherwise 0.
 // Returns:
 //   void.
-void ZoomPictureAndDisplay(HDC hDC, HDC hMemoryDCDraw, HDC hMemoryDCZoom, int xScrollPosition, int yScrollPosition,
-	int zoomInc, int* setZoom, int* isZoomLimitReached);
+void ZoomPictureAndDisplay(HDC hDC, HDC hMemoryDCDraw, HDC hMemoryDCZoom, int xScrollPosition, 
+	int yScrollPosition, int zoomInc, int* setZoom, int* isZoomLimitReached);
 
 // Description:
 //   Draws a picture whose data is transferred in an array.
@@ -160,7 +160,7 @@ void ZoomPictureAndDisplay(HDC hDC, HDC hMemoryDCDraw, HDC hMemoryDCZoom, int xS
 //   drawPictureDataArray - an array containing information for redrawing the DRAWN on the screen.
 // Returns:
 //   void.
-void ReDrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray);
+void RedrawAllPaintedPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray);
 
 // Description:
 //   Draws all picture.
@@ -170,7 +170,7 @@ void ReDrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray
 //   fillBackgroundBursh - brush, which will be painted the background of the picture.
 // Returns:
 //   void.
-void ReDrawAllPictureWithUndoLastAction(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray, 
+void RedrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray, 
 	HBRUSH fillBackgroundBursh);
 
 void OpenEnhancedMetafile(HDC hDC, const PTCHAR fileName);
@@ -546,7 +546,7 @@ LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LP
 
 				ZoomPictureAndDisplay(hDC, hMemoryDCDraw, hMemoryDCZoom, xScrollPosition, yScrollPosition, 0, NULL, NULL);
 
-				ReDrawAllPictureWithUndoLastAction(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
+				RedrawAllPicture(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
 				break;
 			}
@@ -569,7 +569,7 @@ LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LP
 				}
 
 				ZoomPictureAndDisplay(hDC, hMemoryDCDraw, hMemoryDCZoom, xScrollPosition, yScrollPosition, 0, NULL, NULL);
-				ReDrawAllPictureWithUndoLastAction(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
+				RedrawAllPicture(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
 				break;
 			}
@@ -592,7 +592,7 @@ LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LP
 				}
 
 				ZoomPictureAndDisplay(hDC, hMemoryDCDraw, hMemoryDCZoom, xScrollPosition, yScrollPosition, 0, NULL, NULL);
-				ReDrawAllPictureWithUndoLastAction(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
+				RedrawAllPicture(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
 				break;
 			}
@@ -967,7 +967,7 @@ LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LP
 		}
 		else
 		{
-			ReDrawAllPictureWithUndoLastAction(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
+			RedrawAllPicture(hMemoryDCDraw, drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
 			if (IsZoomed(hWnd))
 			{
 				xScrollPosition = 0;
@@ -1049,6 +1049,7 @@ LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LP
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 HWND InitializeToolBar(HWND hWindow)
@@ -1270,14 +1271,12 @@ void On_WM_COMMAND(WPARAM wParam, LPARAM lParam, int* figureToDraw, LPCOLORREF c
 	}
 	case IDM_FILE_PRINT:
 	{
-		//MessageBox(NULL, _TEXT("Print"), _TEXT("Message"), MB_OK | MB_ICONWARNING);
-		SaveEnhancedMetafile(gv_tempFileNameForPrint);
-		ShellExecute(NULL, _TEXT("print"), gv_tempFileNameForPrint, NULL, NULL, SW_HIDE);
-	/*	PRINTDLG pd;
+		/*SaveEnhancedMetafile(gv_tempFileNameForPrint);
+		ShellExecute(NULL, _TEXT("print"), gv_tempFileNameForPrint, NULL, NULL, SW_HIDE);*/
 
-		memset(&pd, 0, sizeof(pd));
+		PRINTDLG pd = { 0 };
 		pd.lStructSize = sizeof(pd);
-		pd.hWndDialogOwner = gv_hWndMainWindow;
+		pd.hwndOwner = gv_hWndMainWindow;
 		pd.hDevMode = NULL;
 		pd.hDevNames = NULL;
 		pd.Flags = PD_USEDEVMODECOPIESANDCOLLATE | PD_RETURNDC;
@@ -1297,13 +1296,13 @@ void On_WM_COMMAND(WPARAM wParam, LPARAM lParam, int* figureToDraw, LPCOLORREF c
 			StartDoc(printerDC, &di);
 			StartPage(printerDC);
 
-			ReDrawAllPicture(printerDC, *drawPictureDataArray);
+			RedrawAllPicture(printerDC, *drawPictureDataArray, (HBRUSH)GetStockObject(WHITE_BRUSH));
 
 			EndPage(printerDC);
 			EndDoc(printerDC);
 
 			DeleteDC(pd.hDC);
-		}*/
+		}
 		break;
 	}
 	case IDM_FILE_EXIT:
@@ -1830,7 +1829,7 @@ void ZoomPictureAndDisplay(HDC hDC, HDC hMemoryDCDraw, HDC hMemoryDCZoom, int xS
 	StretchBlt(hDC, 0, rectanglePicture.top, clientWidth, clientHeight, hMemoryDCZoom, 0, 0, clientWidth, clientHeight, SRCCOPY);
 }
 
-void ReDrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray)
+void RedrawAllPaintedPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray)
 {
 	std::vector<DrawPictureData>::iterator it;
 	HPEN pen;
@@ -1860,33 +1859,28 @@ void ReDrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray
 			std::vector<Point>::iterator itPoint;
 			for (itPoint = pointData.begin(); itPoint != pointData.end(); itPoint++)
 				LineTo(hDC, itPoint->x, itPoint->y);
-
 			break;
 		}
 		case ID_LINE:
 		{
 			MoveToEx(hDC, it->x1, it->y1, NULL);
 			LineTo(hDC, it->x2, it->y2);
-
 			break;
 		}
 		case ID_POLYGON:
 		{
 			MoveToEx(hDC, it->x1, it->y1, NULL);
 			LineTo(hDC, it->x2, it->y2);
-
 			break;
 		}
 		case ID_RECTANGLE:
 		{
 			Rectangle(hDC, it->x1, it->y1, it->x2, it->y2);
-
 			break;
 		}
 		case ID_ELLIPSE:
 		{
 			Ellipse(hDC, it->x1, it->y1, it->x2, it->y2);
-
 			break;
 		}
 		case ID_TEXT:
@@ -1921,7 +1915,7 @@ void ReDrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray
 	}
 }
 
-void ReDrawAllPictureWithUndoLastAction(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray, 
+void RedrawAllPicture(HDC hDC, std::vector<DrawPictureData> drawPictureDataArray, 
 	HBRUSH fillBackgroundBursh)
 {
 	RECT rectanglePicture;
@@ -1935,7 +1929,7 @@ void ReDrawAllPictureWithUndoLastAction(HDC hDC, std::vector<DrawPictureData> dr
 
 	if (!drawPictureDataArray.empty())
 	{
-		ReDrawAllPicture(hDC, drawPictureDataArray);
+		RedrawAllPaintedPicture(hDC, drawPictureDataArray);
 	}
 }
 
