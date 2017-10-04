@@ -1,0 +1,30 @@
+Tue Aug 29 09:44:37 2017
+Initialized threads count: 8.
+
+Tue Aug 29 09:44:37 2017
+A new task has been added.
+
+Tue Aug 29 09:44:37 2017
+A new task has been added.
+
+Tue Aug 29 09:44:37 2017
+A new task has been added.
+
+Tue Aug 29 09:44:37 2017
+A new task has been added.
+
+Tue Aug 29 19:57:07 2017
+Initialized threads count: 8.
+
+Tue Aug 29 19:57:07 2017
+A new task has been added.
+
+Tue Aug 29 19:57:07 2017
+A new task has been added.
+
+Tue Aug 29 19:57:07 2017
+A new task has been added.
+
+Tue Aug 29 19:57:07 2017
+A new task has been added.
+

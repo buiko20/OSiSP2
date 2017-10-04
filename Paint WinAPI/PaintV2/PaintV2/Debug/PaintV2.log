@@ -1,9 +1,2 @@
-﻿  Source.cpp
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(746): warning C4018: '<=': signed/unsigned mismatch
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(781): warning C4018: '<=': signed/unsigned mismatch
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(843): warning C4018: '>=': signed/unsigned mismatch
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(867): warning C4018: '>=': signed/unsigned mismatch
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(1782): warning C4244: '/=': conversion from 'double' to 'int', possible loss of data
-d:\gitfolder\osisp2\lab1\paint winapi\paintv2\paintv2\source.cpp(1783): warning C4244: '/=': conversion from 'double' to 'int', possible loss of data
-  PaintV2.vcxproj -> D:\GitFolder\OSiSP2\Lab1\Paint WinAPI\PaintV2\Debug\PaintV2.exe
+﻿  PaintV2.vcxproj -> D:\GitFolder\OSiSP2\Lab1\Paint WinAPI\PaintV2\Debug\PaintV2.exe
   PaintV2.vcxproj -> D:\GitFolder\OSiSP2\Lab1\Paint WinAPI\PaintV2\Debug\PaintV2.pdb (Full PDB)

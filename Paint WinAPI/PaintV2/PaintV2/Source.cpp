@@ -68,15 +68,6 @@ TCHAR gv_tempFileNameForPrint[] = _TEXT("qwertyuiopasdfghjklzxcvbnmQQQ.emf");
 const int GV_APPLICATION_WIDTH = 640, GV_APPLICATION_HEIGHT = 480;
 const TCHAR GV_APPLICATION_CAPTHION[] = _TEXT("Paint");
 HWND gv_hWndToolBar, gv_hWndStatusBar, gv_hWndMainWindow, gv_hWndEditPenWidth;
-// Description:
-//   Creates a tooltip for an item in a dialog box. 
-// Parameters:
-//   idTool - identifier of an dialog box item.
-//   nDlg - window handle of the dialog box.
-//   pszText - string to use as the tooltip text.
-// Returns:
-//   The handle to the tooltip.
-//
 
 LRESULT CALLBACK WindowProcedure_Main(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
